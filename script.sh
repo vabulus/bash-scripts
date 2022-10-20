@@ -8,7 +8,7 @@ dummy_script(){
 
 user_count=$(who | wc -l)
 
-if [ "$user_count" -gt "3" ]; then
+if [ "$user_count" -gt "0" ]; then
     if test -f "pidfile"; then
         echo "$user_count users are logged in:"
         pid=$(cat $"pidfile")
