@@ -18,8 +18,8 @@ A log file should show when the process was started and when (and by which user)
 ## Setup on linux 
 1. ``cd ~``
 
-2. ``git clone https://github.com/vabulus/bash-scripts.git"``
+2. ``git clone https://github.com/vabulus/bash-scripts.git``
 
 3. ``sudo crontab -e``
 
-4. append following line: ``* * * * * sh <PATH-TO-SCRIPT-LOCATION>``
+4. append following line: ``* * * * * /home/student/bash-script/checker.sh``
