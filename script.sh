@@ -9,32 +9,28 @@ dummy_script(){
 user_count=$(who | wc -l)
 
 if [ "$user_count" -gt "0" ]; then
-    if test -f "pidfile"; then
-        echo "$user_count users are logged in:"
-        pid=$(cat $"pidfile")
+    pid=$(cat $"pidfile")  
+    if [[ ! -z "$pid" && -f "pidfile" ]]; then
         kill $pid;
-        echo "Now trying to soft kill the scrip with pid: $pid"
-        sleep 20;
-        echo "Now killing the process with -9"
-        kill -9 $pid;
+        sleep 2;
+        kill -9 $pid 2>/dev/null
+        echo "[$(date)]: $(who -q | head -1 | cut --delimiter=" " -f 1) killed the script with pid: $pid" | tee -a logs
     else
-        echo "nothing to kill"
+        echo "[$(date)]: No script running, but more than 0 users logged in, therefore not starting script" | tee -a logs
     fi
 else
     if test -f "pidfile"; then
-        pid=$(cat $"pidfile")
-
-        echo $pid
-        if [ -d "/proc/${pid}" ]; then
-            echo "$pid is already running, therefore not starting script"
+        pid=$(cat $"pidfile")     
+        if [[ ! -z "$pid" && -d "/proc/${pid}" ]]; then
+            echo "[$(date)]: Script already running with pid: $pid"
         else
             dummy_script &
             echo $! > pidfile
-            echo "Script not running yet, therefore now starting the script with pid: $!";
+            echo "[$(date)]: Script not running yet, therefore now starting the script with pid: $!";
         fi
     else
-        echo "Init start of script, now creating pidfile and starting script";
         dummy_script &
         echo $! > pidfile
+        echo "[$(date)]: Creating pidfile and starting script with pid: $!" | tee -a logs
     fi
 fi
